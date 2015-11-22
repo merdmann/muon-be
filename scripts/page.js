@@ -58,7 +58,6 @@ exports.setTitle = function (title) {
     "use strict";
 
     $('#ui-title').replaceWith('<span id="ui-title">' + title + '</span>');
-
 };
 
 /**

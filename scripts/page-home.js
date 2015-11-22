@@ -24,7 +24,6 @@
  * THE SOFTWARE.
  */
 
-
 /*global d3 */
 var page = require('./page.js');
 

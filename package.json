@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "engines": {
-    "node": "4.2.2"
+    "node": "5.1.0"
   },
   "description": "ExpressApp1",
   "author": {
