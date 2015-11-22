@@ -1,0 +1,76 @@
+<!--
+ * The file display.ejs is part of the dataportal project.
+ *
+ * The MIT License (MIT) applies.
+ *
+ * Copyright (c) 2015 Michael Erdmann
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ -->
+<p>
+    This page allows to display the results of the correlation experiment. It allows you to select the time frame and the detector to be displayed.
+</p>
+<div class="pure-g">
+    <div class="pure-u-2-5">
+        <h3>Query Input</h3>
+        <div class="roundbox">
+            <form class="pure-form pure-form-stacked">
+                <label for="tilt">Tilt</label>
+                <select id="tilt" name="tilt" />
+                </select>
+                <label for="detector">Detector</label>
+                <select id='detector' name="detector">
+                    <option value="ci">Correlation</option>
+                    <option value="d1">D1 Detector</option>
+                    <option value="d2">D2 Detector</option>
+                </select>
+                <label for="startDate">Begin Date</label>
+                <input id="startDate" type="datetime" name="startDate" value="" />
+                <label for="endDate">End Time:</label>
+                <input id="endDate" type="datetime" name="endDate" value="" />
+                <p>
+                    <button type="button" class="pure-button pure-button-primary button" id="display">Display</button>
+                </p>
+            </form>
+        </div>
+    </div>
+    <div class="pure-u-3-5">
+        <h3>Statistics</h3>
+        <div class="roundbox">
+            <table width="70%">
+                <tr>
+                    <td>Range:</td>
+                    <td><span id="range">Range</span></td>
+                </tr>
+                <tr>
+                    <td>Items in query:</td>
+                    <td><span id="count"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="pure-g">
+    <div class="pure-u-5-5">
+        <h3>Query Result</h3>
+        <div class="roundbox">
+            <div id="diagram"></div>
+        </div>
+    </div>
+</div>

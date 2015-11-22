@@ -1,0 +1,75 @@
+<!--
+ * The file random.js is part of the dataportal project.
+ *
+ * The MIT License (MIT) applies.
+ *
+ * Copyright (c) 2015 Michael Erdmann 
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ -->
+<p>
+    This site allows you to generate a table of random integers of a given bit length.
+</p>
+<div class="pure-g">
+    <div class="pure-u-2-5">
+        <h3>Input</h3>
+        <div class="roundbox">
+            <form class="pure-form pure-form-stacked">
+                <fieldset>
+                    <label for="items">Number of Items</label>
+                    <input id="items" type="number" placeholder="">
+                    <label for="bits">Bits per generated number</label>
+                    <input id="bits" type="number" placeholder="">
+                    <p>
+                        <button type="button" id="submit" class="pure-button pure-button-primary button">Generate</button>
+                    </p>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="pure-u-3-5">
+        <h3>Statistics</h3>
+        <div class="roundbox">
+            <table width="40%">
+                <tr>
+                    <td>Average: </td>
+                    <td style="text-align: right;"><span id="avg"></span></td>
+                </tr>
+                <tr>
+                    <td>Expected:</td>
+                    <td style="text-align: right;"><span id="expected"></span></td>
+                </tr>
+                <tr>
+                    <td>Variance:</td>
+                    <td style="text-align: right;"><span id="variance"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="pure-g">
+    <div class="pure-u-5-5">
+        <h3>Generated Numbers</h3>
+        <div class="roundbox">
+            <table id="data" class="pure-table pure-table-horizontal pure-table-striped">
+            </table>
+        </div>
+        <div id="download"></div>
+    </div>
+</div>
