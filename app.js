@@ -104,7 +104,7 @@ app.use(function (err, req, res, ignore) {
 });
 
 // bringup the database and enable the api routes
-db.dbInitialize(function (err) {
+db.dbInitialize(function(err) {
     "use strict";
     console.log('database started error=' + err);
 });

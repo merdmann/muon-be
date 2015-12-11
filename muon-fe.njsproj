@@ -43,6 +43,7 @@
     <Compile Include="scripts\page-home.js" />
     <Compile Include="scripts\page-random.js" />
     <Compile Include="scripts\page.js" />
+    <Content Include="LICENSE" />
     <Content Include="package.json" />
     <Content Include="public\css\normalize.css" />
     <Content Include="public\fonts\Inconsolata-Bold.ttf" />
