@@ -38,8 +38,8 @@ var api = null;
  * @brief Initialize the interface to the server
  * @details THis methid either takes an argument
  *
- * @param  [description]
- * @return [description]
+ * @param init Initialize the API
+ * @return none
  */
 exports.initialize = function (init) {
     'use strict';
@@ -57,9 +57,17 @@ exports.initialize = function (init) {
     api = restful(server).port(port);
 };
 
+
 /**
- * retrive the condifguration data from and call the callback when it
+ * retrive the configuration data from and call the callback when it
  * has become available.
+ *
+ * @param  {String}   	detector 'D1', 'D2', 'CI'
+ * @param  {Number}   	tilt     tilt of the detector in degrees
+ * @param  {Date/Time}  begin    begin of the time intervall
+ * @param  {Date/Time}  end      end of the time intervall
+ * @param  {Function} 	callback [description]
+ * @return {[void]}  	None
  */
 exports.getConfigData = function (detector, tilt, begin, end, callback) {
     'use strict';
@@ -90,7 +98,7 @@ exports.getConfigData = function (detector, tilt, begin, end, callback) {
  */
 exports.requestData = function (detector, tilt, begin, end, compression, callback) {
     "use strict";
-    
+
     var args = {
         detector: detector,
         startDate: begin,
@@ -140,13 +148,12 @@ exports.requestRandom = function (items, bits, callback) {
 };
 
 /**
- * @brief get all tilts in the database
- * @details THis function returns a list of tilts which are stored in the database.Upon
- * receving the data the call back will be called with the data as an argument. If there
- * is any kind of error the call back will be called with the argument null!
+ * Query the list if avaialable tilts in the database. If there are no tilts
+ * in the databased the callback will be called with an empty array. In all
+ * other cases it is null.
  *
- * @param  none
- * @return data
+ * @param  {Function} callback [the function to be called after the query]
+ * @return {void}      	       [none]
  */
 exports.getTilts = function (callback) {
     "use strict";
