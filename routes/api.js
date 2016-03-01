@@ -24,19 +24,25 @@
  * THE SOFTWARE.
  */
 
+/*TODO: refactoring is needed to sperate the API logic from the routing */
 /*jslint node: true */
 
 var express = require('express');
 var router = express.Router();
 var sql = require('mssql');
 var db = require('../lib/db.js');
+var random = require('../lib/random.js');
 
 /**
- * Get data for a given detector, time intervall and time intervall
+ * Get Data for a given date range of a given detector
+ *
+ * @param  {[type]} '/data/:args' the url /api/data/:args
+ * @param  {[type]} function   call back to be called for this routs
+ * @return {void}               none
  */
 router.get('/data/:args', function (req, res, ignore) {
     "use strict";
-    
+
     var args = JSON.parse(req.params.args),
         detector = args.detector,
         startDate = new Date(args.startDate),
@@ -49,63 +55,62 @@ router.get('/data/:args', function (req, res, ignore) {
                 'where ' +
                 'tilt=@tilt ' +
                 'and (abs(cast(checksum( newid(), date ) % 134217727 as float) / 134217727) < ' + compression + ')';
-    
+
     console.log("compression: " + compression);
-    
+
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
-    
+
     if (args.startDate) {
         query += 'and @d1<date ';
         ps.input('d1', sql.DateTime);
     }
-    
+
     if (args.endDate) {
         query += 'and date<@d2 ';
         ps.input('d2', sql.DateTime);
     }
-    
+
     ps.input('tilt', sql.Int);
-    
+
     ps.output('output_parameter', sql.DateTime); // date
     ps.output('output_parameter', sql.Int); // detector value
-    
+
     console.log(startDate + ', ' + endDate + ', ' + tilt);
     console.log(query);
-    
+
     ps.prepare(query, function (err) {
         if (err) {
-            res.json({ data: null, result: err, query: query });
+            res.json({data: null, result: err, query: query});
             return;
         }
-        
-        ps.execute({ tilt: tilt, d1: startDate, d2: endDate }, function (err, resultSet) {
+
+        ps.execute({tilt: tilt, d1: startDate, d2: endDate}, function (err, resultSet) {
             if (err) {
-                res.json({ data: null, result: err, query: query });
+                res.json({data: null, result: err, query: query});
                 return;
             }
-            
+
             var value = resultSet.toTable().rows,
                 result = [],
                 i;
-            
+
             for (i = 0; i < value.length; i = i + 1) {
                 result.push({
                     date: value[i][0],
                     value: value[i][1]
                 });
             }
-            
-            //console.log("Dataset length: " + value.length);
-            
+
             ps.unprepare(function (err) {
                 if (err) {
+                    //TODO: what to do if everthing failes ... 
                     console.log("++++ error ");
                 }
             });
-            
-            res.json({ data: result, result: err, query: query });
+
+            res.json({data: result, result: err, query: query});
 
         });
     });
@@ -118,7 +123,7 @@ router.get('/data/:args', function (req, res, ignore) {
  */
 router.get('/config/:args', function (req, res, ignore) {
     "use strict";
-    
+
     var args = JSON.parse(req.params.args),
         ps = new sql.PreparedStatement(db.dbConnection()),
         tilt = args.tilt,
@@ -126,7 +131,7 @@ router.get('/config/:args', function (req, res, ignore) {
         startDate = null,
         endDate = null,
         query = 'SELECT count(*), min(date), max(date), min(' + detector + '), max(' + detector + ') FROM TestData';
-    
+
     if (tilt !== null) {
         ps.input('tilt', sql.Int);
     }
@@ -135,28 +140,28 @@ router.get('/config/:args', function (req, res, ignore) {
     ps.output('output_parameter', sql.DateTime);
     ps.output('output_parameter', sql.Int);
     ps.output('output_parameter', sql.Int);
-    
+
     if (tilt !== null) {
         query = query + ' where tilt=@tilt';
     }
-    
+
     if (args.startDate !== null) {
         query += ' and date > @d1';
         ps.input('d1', sql.DateTime);
         startDate = new Date(args.startDate);
     }
-    
+
     if (args.endDate !== null) {
         query += ' and date < @d2';
-        
+
         ps.input('d2', sql.DateTime);
         endDate = new Date(args.endDate);
     }
-    
+
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
-    
+
     ps.prepare(query, function (err) {
         if (err) {
             res.json({
@@ -166,7 +171,7 @@ router.get('/config/:args', function (req, res, ignore) {
             });
             return;
         }
-        
+
         ps.execute({
             tilt: tilt,
             d1: startDate,
@@ -180,7 +185,7 @@ router.get('/config/:args', function (req, res, ignore) {
                 });
                 return;
             }
-            
+
             ps.unprepare(function (err) {
                 if (err) {
                     res.json({
@@ -191,7 +196,7 @@ router.get('/config/:args', function (req, res, ignore) {
                     return;
                 }
                 var result = resultSet.toTable().rows[0][0];
-                
+
                 res.json({
                     result: {
                         startDate: result[1],
@@ -223,38 +228,38 @@ router.get('/tilt/:args', function (req, res, ignore) {
     var ps = new sql.PreparedStatement(db.dbConnection()),
         tilt = [],
         query = 'SELECT distinct tilt  FROM TestData';
-    
+
     ps.output('output_parameter', sql.Int);
-    
+
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
-    
+
     ps.prepare(query, function (err) {
         if (err) {
-            res.json({ result: null, resultCode: err, query: query });
+            res.json({result: null, resultCode: err, query: query});
             return;
         }
-        
+
         ps.execute({}, function (err, resultSet) {
             if (err) {
-                res.json({ result: null, resultCode: err, query: query });
+                res.json({result: null, resultCode: err, query: query});
                 return;
             }
-            
+
             ps.unprepare(function (err) {
                 if (err) {
-                    res.json({ result: null, resultCode: err, query: query });
+                    res.json({result: null, resultCode: err, query: query});
                     return;
                 }
-                
+
                 var value = resultSet.toTable().rows, i;
-                
+
                 for (i = 0; i < value.length; i = i + 1) {
                     tilt.push(value[i][0]);
                 }
                 console.log('tilt: ' + tilt);
-                res.json({ result: tilt, resultCode: err, query: query });
+                res.json({result: tilt, resultCode: err, query: query});
             });
         });
     });
@@ -269,7 +274,7 @@ router.get('/tilt/:args', function (req, res, ignore) {
  */
 router.put('/data', function (req, res, ignore) {
     "use strict";
-    
+
     var ps = new sql.PreparedStatement(db.dbConnection()),
         date = new Date(req.body.date + " " + req.body.time),
         query = 'INSERT INTO TestData VALUES ( @date, @d1, @d2, @ci, @tilt )',
@@ -280,17 +285,17 @@ router.put('/data', function (req, res, ignore) {
             ci: req.body.ci,
             tilt: req.body.tilt
         };
-    
+
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
-    
+
     ps.input('date', sql.DateTime);
     ps.input('d1', sql.Int);
     ps.input('d2', sql.Int);
     ps.input('ci', sql.Int);
     ps.input('tilt', sql.Int);
-    
+
     ps.prepare(query, function (err) {
         if (err) {
             res.json({
@@ -299,7 +304,7 @@ router.put('/data', function (req, res, ignore) {
             });
             return;
         }
-        
+
         ps.execute(args, function (err, ignore) {
             if (err) {
                 res.json({
@@ -308,7 +313,7 @@ router.put('/data', function (req, res, ignore) {
                 });
                 return;
             }
-            
+
             ps.unprepare(function (err) {
                 if (err) {
                     res.json({
@@ -331,61 +336,39 @@ router.put('/data', function (req, res, ignore) {
  */
 router.get('/random/:args', function (req, res, ignore) {
     "use strict";
-    
+
     var args = JSON.parse(req.params.args),
-        items = 0,
-        bits = 0,
-        data = [],
+        items = 8,
+        bits = 8,
         request = new sql.Request(db.dbConnection()),
+        resultCode = null,
         query = "";
-    
-    // build the query
-    if (args.items) {
-        items = args.items;
-    } else {
-        items = 8;
-    }
-    
-    if (args.bits) {
-        bits = args.bits;
-    } else {
-        bits = 8;
-    }
-    
+
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
-    console.log('items: ' + items + ', bits: ' + bits);
-    
+
+    // build the query
+    if (args.items) {
+        items = args.items;
+    }
+
+    if (args.bits) {
+        bits = args.bits;
+    }
     query = 'select top ' + bits * items + ' * from TestData';
-    
-    request.query(query, function (err, recordset) {
-        var bit = 0,
-            next = 0,
-            di = 0,
-            val = 0,
-            rec = 0;
-        
-        if (!err) {
-            for (di = 0; di < items; di += 1) {
-                val = 0;
-                
-                for (bit = 0; bit < bits; bit += 1) {
-                    rec = recordset[next];
-                    if ((rec.d1 + rec.d2 + rec.ci) & 1) {
-                        val = val | (1 << bit);
-                    }
-                    
-                    next = next + 1;
-                }
-                data.push(val);
-            }
-            console.log('data:' + data);
-            
-            res.json({ resultCode: 0, data: data, query: query });
+
+    request.query(query, function (err, recordSet) {
+        var data = [];
+
+        if (err) {
+            resultCode = err;
         } else {
-            res.json({ resultCode: err, data: null, query: query });
+            resultCode = 0;
         }
+
+        data = random.generateRandom(bits, items, recordSet);
+        res.json({resultCode: resultCode, data: data, query: query});
     });
 });
 

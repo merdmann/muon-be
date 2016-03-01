@@ -29,7 +29,6 @@
 var page = require('./page.js');
 var api = require("./api.js");
 
-
 /**
  * @brief Create the page layout
  * @details This function installes a call back which is called after
