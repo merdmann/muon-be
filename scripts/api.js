@@ -26,14 +26,13 @@
 
 /**
  * This file contains the client side of the API to retrieve data from the
- * server.
+ * server. 
  */
 
 /*jslint node: true */
 /*global console, require, restful, window */
 
 var api = null;
-
 /**
  * @brief Initialize the interface to the server
  * @details THis methid either takes an argument

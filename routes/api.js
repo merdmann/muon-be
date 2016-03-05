@@ -40,7 +40,7 @@ var random = require('../lib/random.js');
  * @param  {[type]} function   call back to be called for this routs
  * @return {void}               none
  */
-router.get('/data/:args', function (req, res, ignore) {
+router.get('/data/:args', function (req, res, ignore) { 
     "use strict";
 
     var args = JSON.parse(req.params.args),
