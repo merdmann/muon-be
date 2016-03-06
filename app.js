@@ -49,7 +49,7 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 
 // all css sheets are written using stylus.
@@ -93,7 +93,7 @@ if (app.get('env') === 'development') {
         "use strict";
 
         res.status(err.status || 500);
-        res.render('index.ejs', { script: 'error', title: 'Ups ....', message: err.message });
+        res.render('index.ejs', {script: 'error', title: 'Ups ....', message: err.message});
     });
 }
 
@@ -102,13 +102,21 @@ app.use(function (err, req, res, ignore) {
     "use strict";
 
     res.status(err.status || 500);
-    res.render('index.ejs', { script: 'error', title: 'Ups ....', message: err.message });
+    res.render('index.ejs', {script: 'error', title: 'Ups ....', message: err.message});
 });
 
 // bringup the database and enable the api routes
-db.dbInitialize(function(err) {
+db.dbInitialize(function (err) {
     "use strict";
     console.log('database started error=' + err);
 });
+
+
+process.on('exit', function () {
+    "use strict";
+    console.log("*** Termination recevied ****");
+    process.exit(1);
+});
+
 
 module.exports = app;

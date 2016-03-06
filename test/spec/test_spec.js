@@ -26,32 +26,104 @@
  */
 var api = require('../../scripts/api.js');
 
-describe("The backend server API", function() {
+describe("The backend server API", function () {
 
     beforeEach(function () {
-        api.initialize({ port: 80, server: "michaelslab-muon-fe.azurewebsites.net" });
+        api.initialize({ port: 3000, server: "localhost" });
     });
 
-    describe("Fetch the configuration Data", function () {
+    // ............................................................................
+
+    describe("fetches the configuration Data", function () {
         var theMax = 0;
         var theMin = 0;
         var theCount = 0;
 
         beforeEach(function (done) {
-            api.getConfigData('d1', null, null, null, function (from, till, min, max, count) {
-                theMin = min;
-                theMax = max;
-                theCount = count;
+            api.getConfigData('d1', null, null, null,
+                function (from, till, min, max, count) {
+                    theMin = min;
+                    theMax = max;
+                    theCount = count;
 
+                    done();
+                });
+        });
+
+        it("should yield some none empty data", function () {
+            expect(theCount).toBeGreaterThan(0);
+            expect(theMax).toBeGreaterThan(theMin);
+
+        });
+    });
+
+    // ............................................................................
+    describe("fetches Random Data", function () {
+        var theSize = 0;
+        var reqSize = 8;
+        var reqBits = 14;
+
+        beforeEach(function (done) {
+            api.requestRandom(reqSize, reqBits, function (data) {
+                theSize = data.length;
                 done();
             });
         });
 
         it("should yield some none empty data", function () {
-        	expect(theCount).toBeGreaterThan(0);
-            expect(theMax).toBeGreaterThan(theMin);
-
+            expect(theSize).toBeGreaterThan(0);
+            expect(theSize).toEqual(reqSize);
         });
 
+        it("should return the request number of items", function () {
+            expect(theSize).toEqual(reqSize);
+        });
+    });
+
+    // ..........................................................................
+    describe("fetches tilts", function () {
+        var theTilts = null;
+
+        beforeEach(function (done) {
+            api.getTilts(function (tilts) {
+                theTilts = tilts;
+                done();
+            });
+        });
+
+        it("should yield some none empty data", function () {
+            expect(theTilts.length).toBeGreaterThan(0);
+        });
+    });
+
+    // .........................................................................
+    xdescribe("fetches all available data", function () {
+        var theData = null;
+        var theArgs = null;
+        var theDetector = 'd1';
+        var theTilt = 90;
+        var theCount = 0;
+
+        beforeEach(function (done) {
+            api.getConfigData(theDetector, theTilt, null, null,
+                function (from, till, min, max, count) {
+                    theCount = count;
+
+                    api.requestData(theDetector, theTilt, from, till, 1.0,
+                        function (args, data) {
+                            theData = data;
+                            theArgs = args;
+
+                            done();
+                        });
+                });
+        });
+
+        it("should yield some none empty data", function () {
+            expect(theCount).toBeGreaterThan(0);
+            expect(theData).toBeArray();
+            expect(theData.length).toBeGreaterThan(0);
+            expect(theData.length).toBeLessThan(theCount);
+        });
     });
 });

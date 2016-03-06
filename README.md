@@ -39,3 +39,7 @@ index.ejs which takes two parameters; the java script to be executed and the
 title of the response page. The template defines the basic structure of the
 page and it is the responsibility of the java script to fill page with
 contents. In order to support modular scripting browserify is beeing used.
+
+
+## npm 
+

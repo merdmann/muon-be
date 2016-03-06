@@ -5,7 +5,9 @@
   "scripts": {
     "clean": "rimraf node_modules",
     "lint": "bash -c 'jslint --verbose *.js scripts/*.js routes/*.js lib/*.js' ",
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "start-test": "forever start ./bin/www",
+    "stop-test": "forever stop ./bin/www"
   },
   "engines": {
     "node": ">=5.0.0"
@@ -34,17 +36,23 @@
     "brfs": "^1.4.3",
     "browserify": "^13.0.0",
     "browserify-shim": "^3.8.12",
+    "forever": "^0.15.1",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-nodeunit": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.0",
+    "grunt-exec": "^0.4.6",
     "grunt-karma": "^0.12.1",
     "jasmine": "^2.4.1",
     "jasmine-core": "^2.4.1",
     "jasmine-expect": "^2.0.2",
+    "jasmine-matchers": "^0.2.3",
     "karma": "^0.13.21",
     "karma-browserify": "^5.0.2",
     "karma-chrome-launcher": "^0.2.2",
     "karma-cli": "^0.1.2",
     "karma-jasmine": "^0.3.7",
+    "karma-jasmine-matchers": "^2.0.1",
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-simple-browserify-preprocessor": "0.0.2",
     "phantomjs-prebuilt": "^2.1.4",
