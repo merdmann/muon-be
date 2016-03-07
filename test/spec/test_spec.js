@@ -27,6 +27,14 @@
 var api = require('../../scripts/api.js');
 
 describe("The backend server API", function () {
+    var theDetector = 'd1';
+    var theTilt = 0,
+        theMin = 0,
+        theMax = 0,
+        theCount = 0,
+        theFrom = 0,
+        theTill = 0;
+
 
     beforeEach(function () {
         api.initialize({ port: 3000, server: "localhost" });
@@ -35,16 +43,16 @@ describe("The backend server API", function () {
     // ............................................................................
 
     describe("fetches the configuration Data", function () {
-        var theMax = 0;
-        var theMin = 0;
-        var theCount = 0;
 
         beforeEach(function (done) {
-            api.getConfigData('d1', null, null, null,
+
+            api.getConfigData(theDetector, null, null, null,
                 function (from, till, min, max, count) {
                     theMin = min;
                     theMax = max;
                     theCount = count;
+                    theFrom = from;
+                    theTill = till;
 
                     done();
                 });
@@ -53,7 +61,6 @@ describe("The backend server API", function () {
         it("should yield some none empty data", function () {
             expect(theCount).toBeGreaterThan(0);
             expect(theMax).toBeGreaterThan(theMin);
-
         });
     });
 
@@ -97,32 +104,24 @@ describe("The backend server API", function () {
     });
 
     // .........................................................................
-    xdescribe("fetches all available data", function () {
+    describe("fetches all available data", function () {
         var theData = null;
         var theArgs = null;
-        var theDetector = 'd1';
-        var theTilt = 90;
-        var theCount = 0;
 
         beforeEach(function (done) {
-            api.getConfigData(theDetector, theTilt, null, null,
-                function (from, till, min, max, count) {
-                    theCount = count;
+            api.requestData(theDetector, theTilt, theFrom, theTilt, 0.5,
+                function (args, data) {
+                    theData = data;
+                    theArgs = args;
 
-                    api.requestData(theDetector, theTilt, from, till, 1.0,
-                        function (args, data) {
-                            theData = data;
-                            theArgs = args;
-
-                            done();
-                        });
+                    done();
                 });
         });
 
         it("should yield some none empty data", function () {
             expect(theCount).toBeGreaterThan(0);
             expect(theData).toBeArray();
-            expect(theData.length).toBeGreaterThan(0);
+            //expect(theData.length).toBeGreaterThan(0);
             expect(theData.length).toBeLessThan(theCount);
         });
     });

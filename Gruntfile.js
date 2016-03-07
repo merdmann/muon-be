@@ -43,6 +43,6 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['jshint']);
 
     // important other tasks
-    grunt.registerTask('test', ['exec:stop-test', 'exec:start-test', 'karma']);
+    grunt.registerTask('test', ['exec:start-test', 'karma']);
 
 };
