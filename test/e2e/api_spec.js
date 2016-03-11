@@ -24,17 +24,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+/**
+ * @brief Test the API lib using e2e
+ * @details [long description]
+ * @return [description]
+ */
+
 var api = require('../../scripts/api.js');
 
 describe("The backend server API", function () {
-    var theDetector = 'd1';
-    var theTilt = 0,
+    var theDetector = 'd1',
+        theTilt = 0,
         theMin = 0,
         theMax = 0,
         theCount = 0,
         theFrom = 0,
         theTill = 0;
-
 
     beforeEach(function () {
         api.initialize({ port: 3000, server: "localhost" });
@@ -65,7 +71,7 @@ describe("The backend server API", function () {
     });
 
     // ............................................................................
-    describe("fetches Random Data", function () {
+    describe("Fetching experiment data", function () {
         var theSize = 0;
         var reqSize = 8;
         var reqBits = 14;
@@ -76,13 +82,13 @@ describe("The backend server API", function () {
                 done();
             });
         });
-
+        
         it("should yield some none empty data", function () {
             expect(theSize).toBeGreaterThan(0);
             expect(theSize).toEqual(reqSize);
         });
 
-        it("should return the request number of items", function () {
+        it("should return the requested number of items", function () {
             expect(theSize).toEqual(reqSize);
         });
     });
@@ -104,7 +110,7 @@ describe("The backend server API", function () {
     });
 
     // .........................................................................
-    describe("fetches all available data", function () {
+    describe("fetching all available data", function () {
         var theData = null;
         var theArgs = null;
 

@@ -135,11 +135,6 @@ router.get('/config/:args', function (req, res, ignore) {
     if (tilt !== null) {
         ps.input('tilt', sql.Int);
     }
-    ps.output('output_parameter', sql.Int);
-    ps.output('output_parameter', sql.DateTime);
-    ps.output('output_parameter', sql.DateTime);
-    ps.output('output_parameter', sql.Int);
-    ps.output('output_parameter', sql.Int);
 
     if (tilt !== null) {
         query = query + ' where tilt=@tilt';
@@ -161,6 +156,12 @@ router.get('/config/:args', function (req, res, ignore) {
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
+
+    ps.output('output_parameter', sql.Int);
+    ps.output('output_parameter', sql.DateTime);
+    ps.output('output_parameter', sql.DateTime);
+    ps.output('output_parameter', sql.Int);
+    ps.output('output_parameter', sql.Int);
 
     ps.prepare(query, function (err) {
         if (err) {
