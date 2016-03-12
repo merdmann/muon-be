@@ -32,9 +32,8 @@ var page = require('./page.js');
  * This creates the page layout. This is typically processed before the
  * application code.
  */
-page.createPage(function () {
+page.createPage(function() {
     "use strict";
     // code goes here
     page.setTitle("Ups.. Some error has occured");
 });
-

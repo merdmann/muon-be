@@ -30,26 +30,28 @@
 var api = require('../../lib/api_config.js');
 var db = require('../../lib/db.js');
 
-describe("Getting Configuration Data", function () {
+describe("Getting Configuration Data", function() {
     "use strcit";
     var theFrom = null,
         theTill = null;
 
 
-    beforeEach(function (done) {
-        db.dbInitialize(function () {
+    beforeEach(function(done) {
+        db.dbInitialize(function() {
             console.log("Database connection online.\n");
             done();
         });
     });
 
-    describe("with undefined range", function () {
+    // .................................................................................
+
+    describe("with undefined range", function() {
         var theTilt = 90,
             theError = null,
             theResult = 0;
 
-        beforeEach(function (done) {
-            api.getConfigData('d1', null, null, theTilt, function (result, error) {
+        beforeEach(function(done) {
+            api.getConfigData('d1', null, null, theTilt, function(result, error) {
                 //console.log(result);
 
                 theResult = result;
@@ -58,7 +60,7 @@ describe("Getting Configuration Data", function () {
             });
         });
 
-        it("should yield some none empty data", function () {
+        it("should yield some none empty data", function() {
             expect(theError.resultCode).toBeNull();
             expect(theResult.count).toBeGreaterThan(0);
 
@@ -68,13 +70,15 @@ describe("Getting Configuration Data", function () {
 
     });
 
-    describe("with a given range", function () {
+    // .................................................................................
+
+    describe("with a given range", function() {
         var theTilt = 90,
             theError = null,
             theResult = 0;
 
-        beforeEach(function (done) {
-            api.getConfigData('d1', theFrom, theTill, theTilt, function (result, error) {
+        beforeEach(function(done) {
+            api.getConfigData('d1', theFrom, theTill, theTilt, function(result, error) {
                 //console.log(result);
 
                 theResult = result;
@@ -83,7 +87,7 @@ describe("Getting Configuration Data", function () {
             });
         });
 
-        it("should yield some none empty data", function () {
+        it("should yield some none empty data", function() {
             expect(theError.resultCode).toBeNull();
             expect(theResult.count).toBeGreaterThan(0);
         });
