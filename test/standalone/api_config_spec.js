@@ -5,8 +5,7 @@
  *
  * Copyright (c) 2015 Michael Erdmann
  *
- * Permission is hereb
- * y granted, free of charge, to any person obtaining a copy
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -24,6 +23,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+ /**
+  * @brief 
+  * @details [long description]
+  * @return [description]
+  */
 
 /*jslint node: true */
 
@@ -94,4 +99,25 @@ describe("Getting Configuration Data", function() {
 
     });
 
+    describe("wrong detector", function() {
+        var theTilt = 90,
+            theError = null,
+            theResult = 0;
+
+        beforeEach(function(done) {
+            api.getConfigData('wrong detector', theFrom, theTill, theTilt, function(result, error) {
+                //console.log(result);
+
+                theResult = result;
+                theError = error;
+                done();
+            });
+        });
+
+        it("should yield some empty data", function() {
+            expect(theResult).toBeNull();
+            console.log( theError );
+        });
+
+    });
 });

@@ -26,14 +26,14 @@
  */
 
 /**
- * @brief Test the API lib using e2e
+ * @brief This is the test spec for the browser side api
  * @details [long description]
  * @return [description]
  */
 
 var api = require('../../scripts/api.js');
 
-describe("The backend server API", function () {
+describe("The backend server API", function() {
     var theDetector = 'd1',
         theTilt = 0,
         theMin = 0,
@@ -42,18 +42,20 @@ describe("The backend server API", function () {
         theFrom = 0,
         theTill = 0;
 
-    beforeEach(function () {
-        api.initialize({ port: 3000, server: "localhost" });
+    beforeEach(function() {
+        api.initialize({
+            port: 3000,
+            server: "localhost"
+        });
     });
 
     // ............................................................................
 
-    describe("fetches the configuration Data", function () {
+    describe("fetching the configuration Data", function() {
 
-        beforeEach(function (done) {
-
+        beforeEach(function(done) {
             api.getConfigData(theDetector, null, null, null,
-                function (from, till, min, max, count) {
+                function(from, till, min, max, count) {
                     theMin = min;
                     theMax = max;
                     theCount = count;
@@ -64,59 +66,79 @@ describe("The backend server API", function () {
                 });
         });
 
-        it("should yield some none empty data", function () {
+        it("with correct data should yield some none empty data", function() {
             expect(theCount).toBeGreaterThan(0);
             expect(theMax).toBeGreaterThan(theMin);
         });
     });
 
+    describe("using a wrong detector should yield", function() {
+
+        beforeEach(function(done) {
+            api.getConfigData('wrong detector', null, null, null,
+                function(from, till, min, max, count) {
+                    theMin = min;
+                    theMax = max;
+                    theCount = count;
+                    theFrom = from;
+                    theTill = till;
+
+                    done();
+                });
+        });
+
+        it("some empty data", function() {
+            expect(theCount).toEqual(0);
+        });
+    });
+
     // ............................................................................
-    describe("Fetching experiment data", function () {
+    describe("Fetching experiment data", function() {
         var theSize = 0;
         var reqSize = 8;
         var reqBits = 14;
 
-        beforeEach(function (done) {
-            api.requestRandom(reqSize, reqBits, function (data) {
+        beforeEach(function(done) {
+            api.requestRandom(reqSize, reqBits, function(data) {
                 theSize = data.length;
                 done();
             });
         });
-        
-        it("should yield some none empty data", function () {
+
+        it("should yield some none empty data", function() {
             expect(theSize).toBeGreaterThan(0);
             expect(theSize).toEqual(reqSize);
         });
 
-        it("should return the requested number of items", function () {
+        it("should return the requested number of items", function() {
             expect(theSize).toEqual(reqSize);
         });
     });
 
     // ..........................................................................
-    describe("fetches tilts", function () {
+    describe("fetches tilts", function() {
         var theTilts = null;
 
-        beforeEach(function (done) {
-            api.getTilts(function (tilts) {
+        beforeEach(function(done) {
+            api.getTilts(function(tilts) {
                 theTilts = tilts;
                 done();
             });
         });
 
-        it("should yield some none empty data", function () {
+        it("should yield some none empty data", function() {
             expect(theTilts.length).toBeGreaterThan(0);
         });
     });
 
     // .........................................................................
-    describe("fetching all available data", function () {
+    describe("fetching all available data", function() {
         var theData = null;
         var theArgs = null;
 
-        beforeEach(function (done) {
+        beforeEach(function(done) {
             api.requestData(theDetector, theTilt, theFrom, theTilt, 0.5,
-                function (args, data) {
+                function(args, data) {
                     theData = data;
                     theArgs = args;
 
@@ -124,7 +146,7 @@ describe("The backend server API", function () {
                 });
         });
 
-        it("should yield some none empty data", function () {
+        it("should yield some none empty data", function() {
             expect(theCount).toBeGreaterThan(0);
             expect(theData).toBeArray();
             //expect(theData.length).toBeGreaterThan(0);

@@ -32,6 +32,7 @@ var router = express.Router();
 var sql = require('mssql');
 var db = require('../lib/db.js');
 var random = require('../lib/random.js');
+var config = require('../lib/api_config.js');
 
 /**
  * Get Data for a given date range of a given detector
@@ -40,7 +41,7 @@ var random = require('../lib/random.js');
  * @param  {[type]} function   call back to be called for this routs
  * @return {void}               none
  */
-router.get('/data/:args', function (req, res, ignore) { 
+router.get('/data/:args', function(req, res, ignore) {
     "use strict";
 
     var args = JSON.parse(req.params.args),
@@ -51,10 +52,10 @@ router.get('/data/:args', function (req, res, ignore) {
         compression = args.compression,
         ps = new sql.PreparedStatement(db.dbConnection()),
         query = 'select date, ' + detector + ' ' +
-                'from TestData ' +
-                'where ' +
-                'tilt=@tilt ' +
-                'and (abs(cast(checksum( newid(), date ) % 134217727 as float) / 134217727) < ' + compression + ')';
+        'from TestData ' +
+        'where ' +
+        'tilt=@tilt ' +
+        'and (abs(cast(checksum( newid(), date ) % 134217727 as float) / 134217727) < ' + compression + ')';
 
     console.log("compression: " + compression);
 
@@ -80,15 +81,27 @@ router.get('/data/:args', function (req, res, ignore) {
     console.log(startDate + ', ' + endDate + ', ' + tilt);
     console.log(query);
 
-    ps.prepare(query, function (err) {
+    ps.prepare(query, function(err) {
         if (err) {
-            res.json({data: null, result: err, query: query});
+            res.json({
+                data: null,
+                result: err,
+                query: query
+            });
             return;
         }
 
-        ps.execute({tilt: tilt, d1: startDate, d2: endDate}, function (err, resultSet) {
+        ps.execute({
+            tilt: tilt,
+            d1: startDate,
+            d2: endDate
+        }, function(err, resultSet) {
             if (err) {
-                res.json({data: null, result: err, query: query});
+                res.json({
+                    data: null,
+                    result: err,
+                    query: query
+                });
                 return;
             }
 
@@ -103,114 +116,51 @@ router.get('/data/:args', function (req, res, ignore) {
                 });
             }
 
-            ps.unprepare(function (err) {
+            ps.unprepare(function(err) {
                 if (err) {
                     //TODO: what to do if everthing failes ... 
                     console.log("++++ error ");
                 }
             });
 
-            res.json({data: result, result: err, query: query});
+            res.json({
+                data: result,
+                result: err,
+                query: query
+            });
 
         });
     });
 });
 
 /**
+ * @brief Get the current data configuration
+ * @details [long description]
+ * 
+ * @param q [description]
+ * @param s [description]
+ * @param e [description]
+ * @return [description]
+ */
+
+/**
  * This call returns the configuration data for a given tilt.
  *
  * curl -i -X GET http://localhost:3000/api/config/<tilt>/
  */
-router.get('/config/:args', function (req, res, ignore) {
+router.get('/config/:args', function(req, res, ignore) {
     "use strict";
 
-    var args = JSON.parse(req.params.args),
-        ps = new sql.PreparedStatement(db.dbConnection()),
-        tilt = args.tilt,
-        detector = args.detector,
-        startDate = null,
-        endDate = null,
-        query = 'SELECT count(*), min(date), max(date), min(' + detector + '), max(' + detector + ') FROM TestData';
-
-    if (tilt !== null) {
-        ps.input('tilt', sql.Int);
-    }
-
-    if (tilt !== null) {
-        query = query + ' where tilt=@tilt';
-    }
-
-    if (args.startDate !== null) {
-        query += ' and date > @d1';
-        ps.input('d1', sql.DateTime);
-        startDate = new Date(args.startDate);
-    }
-
-    if (args.endDate !== null) {
-        query += ' and date < @d2';
-
-        ps.input('d2', sql.DateTime);
-        endDate = new Date(args.endDate);
-    }
+    var args = JSON.parse(req.params.args);
 
     if (req.headers.origin) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
 
-    ps.output('output_parameter', sql.Int);
-    ps.output('output_parameter', sql.DateTime);
-    ps.output('output_parameter', sql.DateTime);
-    ps.output('output_parameter', sql.Int);
-    ps.output('output_parameter', sql.Int);
-
-    ps.prepare(query, function (err) {
-        if (err) {
-            res.json({
-                result: null,
-                resultCode: err,
-                query: query
-            });
-            return;
-        }
-
-        ps.execute({
-            tilt: tilt,
-            d1: startDate,
-            d2: endDate
-        }, function (err, resultSet) {
-            if (err) {
-                res.json({
-                    result: null,
-                    resultCode: err,
-                    query: query
-                });
-                return;
-            }
-
-            ps.unprepare(function (err) {
-                if (err) {
-                    res.json({
-                        result: null,
-                        resultCode: err,
-                        query: query
-                    });
-                    return;
-                }
-                var result = resultSet.toTable().rows[0][0];
-
-                res.json({
-                    result: {
-                        startDate: result[1],
-                        endDate: result[2],
-                        count: result[0],
-                        minValue: result[3],
-                        maxValue: result[4],
-                        tilt: tilt
-                    },
-                    resultCode: err,
-                    query: query
-                });
-            });
+    config.getConfigData(args.detector, null, null, args.tilt, function cb(result, error) {
+        res.json({
+            result: result,
+            resultCode: error
         });
     });
 });
@@ -224,7 +174,7 @@ router.get('/config/:args', function (req, res, ignore) {
  * @param e [description]
  * @return [description]
  */
-router.get('/tilt/:args', function (req, res, ignore) {
+router.get('/tilt/:args', function(req, res, ignore) {
     "use strict";
     var ps = new sql.PreparedStatement(db.dbConnection()),
         tilt = [],
@@ -236,31 +186,48 @@ router.get('/tilt/:args', function (req, res, ignore) {
         res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
     }
 
-    ps.prepare(query, function (err) {
+    ps.prepare(query, function(err) {
         if (err) {
-            res.json({result: null, resultCode: err, query: query});
+            res.json({
+                result: null,
+                resultCode: err,
+                query: query
+            });
             return;
         }
 
-        ps.execute({}, function (err, resultSet) {
+        ps.execute({}, function(err, resultSet) {
             if (err) {
-                res.json({result: null, resultCode: err, query: query});
+                res.json({
+                    result: null,
+                    resultCode: err,
+                    query: query
+                });
                 return;
             }
 
-            ps.unprepare(function (err) {
+            ps.unprepare(function(err) {
                 if (err) {
-                    res.json({result: null, resultCode: err, query: query});
+                    res.json({
+                        result: null,
+                        resultCode: err,
+                        query: query
+                    });
                     return;
                 }
 
-                var value = resultSet.toTable().rows, i;
+                var value = resultSet.toTable().rows,
+                    i;
 
                 for (i = 0; i < value.length; i = i + 1) {
                     tilt.push(value[i][0]);
                 }
                 console.log('tilt: ' + tilt);
-                res.json({result: tilt, resultCode: err, query: query});
+                res.json({
+                    result: tilt,
+                    resultCode: err,
+                    query: query
+                });
             });
         });
     });
@@ -273,7 +240,7 @@ router.get('/tilt/:args', function (req, res, ignore) {
 " : "190" }' http://localhost:3000/api/data
  *
  */
-router.put('/data', function (req, res, ignore) {
+router.put('/data', function(req, res, ignore) {
     "use strict";
 
     var ps = new sql.PreparedStatement(db.dbConnection()),
@@ -297,7 +264,7 @@ router.put('/data', function (req, res, ignore) {
     ps.input('ci', sql.Int);
     ps.input('tilt', sql.Int);
 
-    ps.prepare(query, function (err) {
+    ps.prepare(query, function(err) {
         if (err) {
             res.json({
                 resultCode: err,
@@ -306,7 +273,7 @@ router.put('/data', function (req, res, ignore) {
             return;
         }
 
-        ps.execute(args, function (err, ignore) {
+        ps.execute(args, function(err, ignore) {
             if (err) {
                 res.json({
                     resultCode: err,
@@ -315,7 +282,7 @@ router.put('/data', function (req, res, ignore) {
                 return;
             }
 
-            ps.unprepare(function (err) {
+            ps.unprepare(function(err) {
                 if (err) {
                     res.json({
                         resultCode: err,
@@ -335,7 +302,7 @@ router.put('/data', function (req, res, ignore) {
 /**
  * return a series of random numbers
  */
-router.get('/random/:args', function (req, res, ignore) {
+router.get('/random/:args', function(req, res, ignore) {
     "use strict";
 
     var args = JSON.parse(req.params.args),
@@ -359,7 +326,7 @@ router.get('/random/:args', function (req, res, ignore) {
     }
     query = 'select top ' + bits * items + ' * from TestData';
 
-    request.query(query, function (err, recordSet) {
+    request.query(query, function(err, recordSet) {
         var data = [];
 
         if (err) {
@@ -369,7 +336,11 @@ router.get('/random/:args', function (req, res, ignore) {
         }
 
         data = random.generateRandom(bits, items, recordSet);
-        res.json({resultCode: resultCode, data: data, query: query});
+        res.json({
+            resultCode: resultCode,
+            data: data,
+            query: query
+        });
     });
 });
 

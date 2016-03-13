@@ -26,7 +26,7 @@
 
 /**
  * This file contains the client side of the API to retrieve data from the
- * server. 
+ * server.
  */
 
 /*jslint node: true */
@@ -40,7 +40,7 @@ var api = null;
  * @param init Initialize the API
  * @return none
  */
-exports.initialize = function (init) {
+exports.initialize = function(init) {
     'use strict';
     var port, server;
 
@@ -61,14 +61,14 @@ exports.initialize = function (init) {
  * retrive the configuration data from and call the callback when it
  * has become available.
  *
- * @param  {String}   	detector 'D1', 'D2', 'CI'
- * @param  {Number}   	tilt     tilt of the detector in degrees
+ * @param  {String}     detector 'D1', 'D2', 'CI'
+ * @param  {Number}     tilt     tilt of the detector in degrees
  * @param  {Date/Time}  begin    begin of the time intervall
  * @param  {Date/Time}  end      end of the time intervall
- * @param  {Function} 	callback [description]
- * @return {[void]}  	None
+ * @param  {Function}   callback [description]
+ * @return {[void]}     None
  */
-exports.getConfigData = function (detector, tilt, begin, end, callback) {
+exports.getConfigData = function(detector, tilt, begin, end, callback) {
     'use strict';
 
     var args = {
@@ -78,7 +78,7 @@ exports.getConfigData = function (detector, tilt, begin, end, callback) {
         tilt: tilt
     };
 
-    api.one('api/config', JSON.stringify(args)).get().then(function (response) {
+    api.one('api/config', JSON.stringify(args)).get().then(function(response) {
         var config = response.body().data(),
             count = config.result.count,
             from = config.result.startDate,
@@ -95,7 +95,7 @@ exports.getConfigData = function (detector, tilt, begin, end, callback) {
 /**
  * This functuion requests data from the server
  */
-exports.requestData = function (detector, tilt, begin, end, compression, callback) {
+exports.requestData = function(detector, tilt, begin, end, compression, callback) {
     "use strict";
 
     var args = {
@@ -109,20 +109,20 @@ exports.requestData = function (detector, tilt, begin, end, compression, callbac
     console.log(args);
 
     api.one("api/data", JSON.stringify(args)).get().then(
-        function (response) {
+        function(response) {
             var b = response.body().data();
 
             if (callback) {
                 callback(args, b.data);
             }
         },
-        function (ignore) {
+        function(ignore) {
             callback(null, null);
         }
     );
 };
 
-exports.requestRandom = function (items, bits, callback) {
+exports.requestRandom = function(items, bits, callback) {
     "use strict";
 
     var args = {
@@ -131,14 +131,14 @@ exports.requestRandom = function (items, bits, callback) {
     };
 
     api.one("api/random", JSON.stringify(args)).get().then(
-        function (response) {
+        function(response) {
             var b = response.body().data();
 
             if (callback) {
                 callback(b.data);
             }
         },
-        function (ignore) {
+        function(ignore) {
             if (callback) {
                 callback(null);
             }
@@ -152,24 +152,24 @@ exports.requestRandom = function (items, bits, callback) {
  * other cases it is null.
  *
  * @param  {Function} callback [the function to be called after the query]
- * @return {void}      	       [none]
+ * @return {void}              [none]
  */
-exports.getTilts = function (callback) {
+exports.getTilts = function(callback) {
     "use strict";
 
     var args = {};
 
     api.one("api/tilt", JSON.stringify(args)).get().then(
-        function (response) {
+        function(response) {
             var b = response.body().data();
 
             if (callback) {
                 callback(b.result);
             }
         },
-        function (ignore) {
+        function(ignore) {
             if (callback) {
-                callback(null,b);
+                callback(null, b);
             }
         }
     );
