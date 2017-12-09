@@ -1,5 +1,4 @@
 /*
- * The file api.js is part of the dataportal project.
  *
  * The MIT License (MIT) applies.
  *
