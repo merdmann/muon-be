@@ -1,6 +1,4 @@
 /*
- * The file api.js is part of the datapol project.
- *
  * The MIT License (MIT) applies.
  *
  * Copyright (c) 2015 Michael Erdmann
@@ -23,6 +21,8 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
+ * 
+ * Generate Random Tables
  */
 
 /*global d3 */

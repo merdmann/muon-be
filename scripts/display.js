@@ -1,6 +1,4 @@
 /*
- * The file display.ejs is part of the dataportal project.
- *
  * The MIT License (MIT) applies.
  *
  * Copyright (c) 2015 Michael Erdmann
