@@ -27,7 +27,7 @@ of bits can be specified and the ammount of number to be generated can be specif
 take of any overflow caused bz using number sizes, upto 16 bits are working well.
 
 
-![Random data](https://github.com/merdmann/muon-be/tree/master/img/Screenshot%20from%202017-12-09%2010-29-25.png "Random Data")
+![Random data](https://github.com/merdmann/muon-be/tree/master/img/Screenshot%20from%202017-12-09%2010-29-25.png "Random Data"
 
 
 # Displaying Data
@@ -36,7 +36,7 @@ THe display page allows to display data for the D1, D2 and the corelation data i
 server whhch stores the measurements. From the result set of a time query a fixed number of points is selected and returned to 
 the gateway for display. THe users browser will render the diagrams.
 
-![DIsplaying Data](https://github.com/merdmann/muon-be/tree/master/img/Screenshot%20from%202017-12-09%2010-29-25.png "Displying Data")
+![DIsplaying Data](https://github.com/merdmann/muon-be/tree/master/img/Screenshot%20from%202017-12-09%2010-29-25.png "Displying Data"
 
 
 
