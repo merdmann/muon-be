@@ -2,8 +2,7 @@
 
 This is the Gateway for the Muon Correlation experiment.
 
-THis server exposes the interface to the experiement equptment which allows to store meansurment data in real time. THe gateway stores the data on an MSQL database server. ON the ither hand this server provides the GUI
-to access the measurement data on time basis.
+THis server exposes the interface to the experiement equptment which allows to store meansurment data in real time. The gateway stores the data on an MSQL database server. ON the ither hand this server provides the GUI to access the measurement data on time basis.
 
 # The GUI
 
@@ -36,7 +35,7 @@ THe display page allows to display data for the D1, D2 and the corelation data i
 server whhch stores the measurements. From the result set of a time query a fixed number of points is selected and returned to 
 the gateway for display. THe users browser will render the diagrams.
 
-![DIsplaying Data](https://github.com/merdmann/muon-be/tree/master/img/Screenshot%20from%202017-12-09%2010-29-25.png "Displying Data")
+![DIsplaying Data](https://github.com/merdmann/muon-be/tree/master/img/Screenshot%20from%202017-12-09%2010-29-25.png "Displaying Data")
 
 
 
